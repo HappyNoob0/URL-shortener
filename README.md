@@ -8,20 +8,20 @@ The platform provides secure URL shortening, distributed token generation, analy
 
 # ✨ Features
 
-* 🔗 URL Shortening
-* 🔐 JWT Authentication
-* 👤 User Registration & Login
-* 📊 Analytics Dashboard
-* 👥 Unique Visitor Tracking
-* 🌐 Browser Detection
-* 📱 Device Detection
-* 📈 Click Tracking
-* 🌍 Visitor Location Tracking
-* ⚡ Redis Caching
-* 🚦 API Rate Limiting
-* 🐳 Dockerized Deployment
-* ⚖️ Nginx Load Balancing
-* 🦓 ZooKeeper-Based Token Generation
+- 🔗 URL Shortening
+- 🔐 JWT Authentication
+- 👤 User Registration & Login
+- 📊 Analytics Dashboard
+- 👥 Unique Visitor Tracking
+- 🌐 Browser Detection
+- 📱 Device Detection
+- 📈 Click Tracking
+- 🌍 Visitor Location Tracking
+- ⚡ Redis Caching
+- 🚦 API Rate Limiting
+- 🐳 Dockerized Deployment
+- ⚖️ Nginx Load Balancing
+- 🦓 ZooKeeper-Based Token Generation
 
 ---
 
@@ -37,23 +37,18 @@ The platform provides secure URL shortening, distributed token generation, analy
                            │
           ┌────────────────┼────────────────┐
           ▼                ▼                ▼
-
       Server-1         Server-2         Server-3
       (Fastify)        (Fastify)        (Fastify)
-
           │                │                │
           └────────────────┼────────────────┘
                            │
                            ▼
-
                        Redis Cache
                            │
                            ▼
-
                         MongoDB
                            │
                            ▼
-
                        ZooKeeper
 ```
 
@@ -63,33 +58,27 @@ The platform provides secure URL shortening, distributed token generation, analy
 
 Unlike traditional URL shorteners that rely on Base62 encoding of database IDs, this system uses ZooKeeper-assisted distributed token generation.
 
-### Token Characteristics
+## Token Characteristics
 
-* Character Set: `A-Z`, `a-z`, `0-9`
-* Token Length: `6 Characters`
-
-### Total Possible URLs
-
-```text
-62^6 = 56,800,235,584
-≈ 56.8 Billion URLs
-```
+- Character Set: **A-Z, a-z, 0-9**
+- Token Length: **6**
+- Total Possible URLs: **62^6 = 56,800,235,584 (~56.8 Billion)**
 
 ### Example
 
-Original URL
+**Original URL**
 
 ```text
 https://leetcode.com/problems/two-sum
 ```
 
-Generated Token
+**Generated Token**
 
 ```text
 tyDLAj
 ```
 
-Short URL
+**Short URL**
 
 ```text
 http://localhost/tyDLAj
@@ -97,11 +86,11 @@ http://localhost/tyDLAj
 
 ### Benefits
 
-* ✅ Collision Resistant
-* ✅ No Sequential IDs
-* ✅ Horizontally Scalable
-* ✅ Distributed-System Friendly
-* ✅ Difficult to Predict
+- ✅ Collision Resistant
+- ✅ No Sequential IDs
+- ✅ Horizontally Scalable
+- ✅ Distributed-System Friendly
+- ✅ Difficult to Predict
 
 ---
 
@@ -116,14 +105,11 @@ Validate URL
  ↓
 Check Existing URL
  ↓
-Generate Distributed Token
-(ZooKeeper)
+Generate Distributed Token (ZooKeeper)
  ↓
-Store URL Mapping
-(MongoDB)
+Store URL Mapping (MongoDB)
  ↓
-Cache URL Mapping
-(Redis)
+Cache URL Mapping (Redis)
  ↓
 Return Short URL
 ```
@@ -156,66 +142,43 @@ Return URL     MongoDB
 
 # 📊 Analytics Dashboard
 
-The platform collects analytics for every shortened URL.
+Visitor information collected:
 
-### Visitor Information
+- 🌍 Country
+- 🗺️ Region / State
+- 🏙️ City
+- 🌐 Browser
+- 📱 Device Type
+- 📍 IP Address
+- 🕒 Timestamp
 
-* 🌍 Country
-* 🗺️ Region / State
-* 🏙️ City
-* 🌐 Browser
-* 📱 Device Type
-* 📍 IP Address
-* 🕒 Timestamp
+Dashboard metrics:
 
-### Dashboard Metrics
-
-* 👥 Total Visitors
-* 🎯 Unique Visitors
-* 🌐 Unique Browsers
-* 📱 Unique Devices
-* 📈 Total Clicks
+- 👥 Total Visitors
+- 🎯 Unique Visitors
+- 🌐 Unique Browsers
+- 📱 Unique Devices
+- 📈 Total Clicks
 
 ---
 
 # 🔐 Authentication
 
-### Registration
+## Registration
 
 ```text
-User
- ↓
-Register
- ↓
-Hash Password
-(bcrypt)
- ↓
-MongoDB
+User → Register → Hash Password (bcrypt) → MongoDB
 ```
 
-### Login
+## Login
 
 ```text
-User
- ↓
-Login
- ↓
-Verify Password
- ↓
-Generate JWT
- ↓
-Return Token
- ↓
-Store in Browser
+User → Login → Verify Password → Generate JWT → Return Token → Store in Browser
 ```
 
 ---
 
 # ⚡ Redis Caching
-
-Redis stores frequently accessed URL mappings.
-
-### Cache Flow
 
 ```text
 Request
@@ -233,53 +196,37 @@ Store in Redis
 Return URL
 ```
 
-### Benefits
+Benefits:
 
-* Faster URL Resolution
-* Reduced Database Load
-* Lower Response Latency
-* Improved Scalability
+- Faster URL Resolution
+- Reduced Database Load
+- Lower Response Latency
+- Improved Scalability
 
 ---
 
 # 🚦 Rate Limiting
 
-API rate limiting is implemented using **Fastify Rate Limit** to protect backend services from abuse and excessive traffic.
+API rate limiting is implemented using **Fastify Rate Limit**.
 
-### Current Limits
+| Endpoint | Limit |
+|----------|-------|
+| `POST /api/urls` | **20 requests/minute/IP** |
+| All Other API Endpoints | **100 requests/minute/IP** |
 
-| Endpoint                | Limit                      |
-| ----------------------- | -------------------------- |
-| POST /api/urls          | 20 requests/minute per IP  |
-| All Other API Endpoints | 100 requests/minute per IP |
+Benefits:
 
-### Example
-
-```text
-POST /api/urls
-
-Allowed:
-20 requests/minute/IP
-
-Exceeded:
-HTTP 429 Too Many Requests
-```
-
-### Benefits
-
-* 🛡️ Prevents Abuse
-* 🔐 Protects Backend Resources
-* ⚡ Reduces Unnecessary Load
-* 📈 Improves Stability
-* 🌐 Supports Scalable Systems
+- 🛡️ Prevents Abuse
+- 🔐 Protects Backend Resources
+- ⚡ Reduces Unnecessary Load
+- 📈 Improves Stability
+- 🌐 Supports Scalable Systems
 
 ---
 
 # ⚖️ Load Balancing
 
-Nginx distributes incoming requests across multiple Fastify backend instances using Round Robin Load Balancing.
-
-### Example
+Nginx distributes incoming requests using **Round Robin**.
 
 ```text
 Request 1 → Server-1
@@ -288,115 +235,121 @@ Request 3 → Server-3
 Request 4 → Server-1
 ```
 
-### Benefits
-
-* Improved Throughput
-* Better Reliability
-* Horizontal Scalability
-* Reduced Server Overload
-
 ---
 
 # 🦓 ZooKeeper Coordination
 
-ZooKeeper is used to coordinate distributed token generation.
-
-Example:
-
-```text
-Server-1 → tyDLAj
-Server-2 → tyDLAj
-```
-
-ZooKeeper ensures:
-
-```text
-Only one token reservation succeeds.
-The other server generates a new token.
-```
-
-This prevents token collisions across backend instances.
+ZooKeeper coordinates distributed token generation to prevent collisions across multiple Fastify instances.
 
 ---
 
 # 🛠️ Tech Stack
 
 ## Frontend
-
-* React
-* TypeScript
-* Material UI
-* Redux Toolkit Query
-* React Router
+- React
+- TypeScript
+- Material UI
+- Redux Toolkit Query
+- React Router
 
 ## Backend
-
-* Node.js
-* Fastify
-* TypeScript
+- Node.js
+- Fastify
+- TypeScript
 
 ## Database
-
-* MongoDB
-* Mongoose
+- MongoDB
+- Mongoose
 
 ## Cache
-
-* Redis
-* ioredis
+- Redis
+- ioredis
 
 ## Authentication
-
-* JWT
-* bcrypt
+- JWT
+- bcrypt
 
 ## Infrastructure
-
-* Docker
-* Docker Compose
-* Nginx
-* ZooKeeper
+- Docker
+- Docker Compose
+- Nginx
+- ZooKeeper
 
 ## Analytics
-
-* geoip-lite
-* ua-parser-js
+- geoip-lite
+- ua-parser-js
 
 ---
 
 # 🚀 Run Locally
 
-Clone Repository
-
 ```bash
 git clone https://github.com/PRIYANSHUMNNIT01/Distributed-url-shortener.git
 cd Distributed-url-shortener
-```
-
-Start Services
-
-```bash
 docker compose up --build
 ```
 
 Application URLs
 
-```text
-Frontend : http://localhost
-Backend  : http://localhost/api
+- Frontend: http://localhost
+- Backend: http://localhost/api
+
+---
+
+# ⚡ Performance Benchmark
+
+Benchmarked using **wrk** with **4 threads**, **100 concurrent connections**, and **30 seconds** duration.
+
+## Frontend Benchmark
+
+```bash
+wrk --latency -t4 -c100 -d30s http://localhost:5173/
 ```
+
+| Metric | Value |
+|--------|------:|
+| Average Latency | **12.35 ms** |
+| P50 Latency | **10.88 ms** |
+| P90 Latency | **12.66 ms** |
+| P99 Latency | **47.57 ms** |
+| Requests/sec | **8705.40** |
+| Transfer/sec | **10.59 MB/s** |
+
+## Backend Benchmark
+
+```bash
+wrk --latency -t4 -c100 -d30s http://localhost/n60fxD
+```
+
+| Metric | Value |
+|--------|------:|
+| Average Latency | **108.39 ms** |
+| P50 Latency | **105.62 ms** |
+| P90 Latency | **126.37 ms** |
+| P99 Latency | **173.30 ms** |
+| Requests/sec | **920.91** |
+| Transfer/sec | **1.12 MB/s** |
+
+### Benchmark Environment
+
+- Docker Compose
+- Nginx Reverse Proxy
+- 3 Fastify Backend Instances
+- Redis
+- MongoDB
+- ZooKeeper
 
 ---
 
 # 📈 Scalability Highlights
 
-* Multiple Fastify Backend Instances
-* Nginx Load Balancer
-* Redis Caching Layer
-* ZooKeeper Distributed Coordination
-* MongoDB Persistent Storage
-* API Rate Limiting
-* Dockerized Infrastructure
+- Multiple Fastify Backend Instances
+- Nginx Load Balancer
+- Redis Caching Layer
+- ZooKeeper Distributed Coordination
+- MongoDB Persistent Storage
+- API Rate Limiting
+- Dockerized Infrastructure
 
 The system is designed to scale horizontally by adding additional Fastify instances behind Nginx.
 
@@ -404,14 +357,14 @@ The system is designed to scale horizontally by adding additional Fastify instan
 
 # 🔮 Future Improvements
 
-* 📱 QR Code Generation
-* ✏️ Custom Short URLs
-* 📊 Interactive Analytics Charts
-* ☁️ Cloud Deployment (AWS/GCP)
-* 📧 Email Verification
-* 🔑 Password Reset
-* 🌎 Country-Wise Traffic Reports
-* 🛡️ Cloudflare Integration
-* ⏳ Custom Expiration Policies
-* 🚦 Redis-Based Distributed Rate Limiting
-* 📈 Prometheus & Grafana Monitoring
+- 📱 QR Code Generation
+- ✏️ Custom Short URLs
+- 📊 Interactive Analytics Charts
+- ☁️ Cloud Deployment (AWS/GCP)
+- 📧 Email Verification
+- 🔑 Password Reset
+- 🌎 Country-Wise Traffic Reports
+- 🛡️ Cloudflare Integration
+- ⏳ Custom Expiration Policies
+- 🚦 Redis-Based Distributed Rate Limiting
+- 📈 Prometheus & Grafana Monitoring
